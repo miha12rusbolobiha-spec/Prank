@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SYSTEM FAILURE</title>
+    <style>
+        body {
+            background: #000;
+            color: #f00;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+        /* Тряска экрана */
+        .shake-effect {
+            animation: shake 0.15s infinite;
+        }
+        @keyframes shake {
+            0% { transform: translate(2px, 1px); }
+            50% { transform: translate(-2px, -1px); }
+            100% { transform: translate(1px, 2px); }
+        }
+        h1 { font-size: 3rem; margin: 0; color: #fff; text-shadow: 0 0 10px #f00; }
+        p { font-size: 1.2rem; color: #ff3333; margin-top: 20px; }
+    </style>
+</head>
+<body onclick="activateLocker()">
+
+    <div id="ui">
+        <h1>[!] ERROR</h1>
+        <p>CRITICAL_SYSTEM_LOCK_0x44</p>
+        <p>Нажмите для ввода ключа доступа</p>
+    </div>
+
+    <script>
+        const KEY = "ЯПранкеР!";
+        
+        function activateLocker() {
+            // Входим в полный экран
+            let el = document.documentElement;
+            if (el.requestFullscreen) el.requestFullscreen();
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+
+            // Включаем тряску
+            document.body.classList.add('shake-effect');
+
+            let attempt = "";
+            // Бесконечный цикл, пока не введут верный пароль
+            while (attempt !== KEY) {
+                attempt = prompt("СИСТЕМА ЗАБЛОКИРОВАНА!\nВведите пароль ЯПранкеР! для отмены удаления данных:");
+
+                if (attempt === KEY) {
+                    document.body.classList.remove('shake-effect');
+                    document.body.innerHTML = "<h1 style='color:lime'>СИСТЕМА ВОССТАНОВЛЕНА</h1><p>Доступ разрешен.</p>";
+                    break;
+                } else if (attempt !== null) {
+                    alert("ОШИБКА: Неверный ключ. Доступ запрещен.");
+                } else {
+                    alert("Отказ от ввода приведет к сбросу настроек!");
+                }
+            }
+        }
+
+        // Блокировка кнопки "Назад"
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+            activateLocker();
+        };
+    </script>
+</body>
+</html>
